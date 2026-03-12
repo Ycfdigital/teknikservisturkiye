@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { ad: "Ana Sayfa", href: "/" },
   {
     ad: "Servisler", href: "#",
-    alt: kategoriler.map(k => ({ ad: k.ad, href: `/servis/${k.slug}` }))
+    alt: kategoriler.map(k => ({ ad: k.ad, href: `/kategori/${k.slug}` }))
   },
   {
     ad: "Premium Ustalar", href: "/premium-ustalar",
@@ -143,7 +143,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div>
               <h4 style={{ color: "#fff", fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Servisler</h4>
               {kategoriler.map(k => (
-                <Link key={k.slug} href={`/servis/${k.slug}`} style={{ display: "block", color: "#9CA3AF", textDecoration: "none", fontSize: 13, marginBottom: 8 }}
+                <Link key={k.slug} href={`/kategori/${k.slug}`} style={{ display: "block", color: "#9CA3AF", textDecoration: "none", fontSize: 13, marginBottom: 8 }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#9CA3AF")}>
                   {k.ad}
