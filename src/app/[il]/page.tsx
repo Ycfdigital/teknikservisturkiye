@@ -2,12 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { iller, kategoriler } from "@/data/turkiye";
-import {
-  generateTitle, generateDescription,
-  breadcrumbSchema, ilSchema, faqSchema, kategoriSSS, sayfaBasliklari,
-  SITE_URL
-} from "@/lib/seo";
+import { generateTitle, generateDescription, breadcrumbSchema, ilSchema, faqSchema, kategoriSSS, sayfaBasliklari, SITE_URL } from "@/lib/seo";
 import { AdSenseBanner } from "@/components/ui/AdSense";
+
+export const dynamic = "force-dynamic";
 
 interface Props { params: { il: string } }
 
@@ -18,88 +16,55 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: generateTitle({ tip: "il", il: il.ad }),
     description: generateDescription({ tip: "il", il: il.ad }),
     alternates: { canonical: `${SITE_URL}/${params.il}` },
-    openGraph: {
-      title: generateTitle({ tip: "il", il: il.ad }),
-      description: generateDescription({ tip: "il", il: il.ad }),
-      url: `${SITE_URL}/${params.il}`,
-      locale: "tr_TR", type: "website"
-    }
+    openGraph: { title: generateTitle({ tip: "il", il: il.ad }), description: generateDescription({ tip: "il", il: il.ad }), url: `${SITE_URL}/${params.il}`, locale: "tr_TR", type: "website" }
   };
-}
-
-export async function generateStaticParams() {
-  return Object.keys(iller).map(slug => ({ il: slug }));
 }
 
 export default function IlSayfasi({ params }: Props) {
   const il = iller[params.il];
   if (!il) notFound();
 
-  const basliklar = sayfaBasliklari({ tip: "il", il: il.ad });
-
-  const breadcrumb = breadcrumbSchema([
-    { ad: "Ana Sayfa", url: "/" },
-    { ad: il.ad, url: `/${params.il}` }
-  ]);
+  const basliklar = sayfaBasliklari({ tip: "il", il: il.ad })!;
+  const breadcrumb = breadcrumbSchema([{ ad: "Ana Sayfa", url: "/" }, { ad: il.ad, url: `/${params.il}` }]);
   const ilSema = ilSchema({ il: il.ad, ilSlug: params.il, lat: il.lat, lng: il.lng, ilceler: il.ilceler });
   const sss = faqSchema(kategoriSSS({ ilce: il.ad, il: "Türkiye", kategori: "teknik servis", markalar: ["Arçelik", "Bosch", "Daikin", "Vaillant"] }));
 
   return (
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-      {ilSema.map((s, i) => (
-        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />
-      ))}
+      {ilSema.map((s, i) => <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />)}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sss) }} />
 
-      {/* Breadcrumb Nav */}
       <div style={{ background: "#F9FAFB", borderBottom: "1px solid #E5E7EB", padding: "12px 24px" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", fontSize: 13, color: "#6B7280", display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", fontSize: 13, color: "#6B7280", display: "flex", gap: 8 }}>
           <Link href="/" style={{ color: "#1A56DB", textDecoration: "none", fontWeight: 600 }}>Ana Sayfa</Link>
           <span>›</span>
           <span style={{ color: "#111827", fontWeight: 600 }}>{il.ad}</span>
         </div>
       </div>
 
-      {/* Hero */}
       <section style={{ background: "linear-gradient(135deg, #1A56DB 0%, #1E40AF 100%)", padding: "48px 24px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          {/* H1: URL ile tutarlı — "İzmir Teknik Servis Rehberi 2026" */}
-          <h1 style={{ fontSize: "clamp(24px, 4vw, 42px)", fontWeight: 900, color: "#fff", marginBottom: 12 }}>
-            {basliklar.h1}
-          </h1>
-          <p style={{ color: "#BFDBFE", fontSize: 16, maxWidth: 680, lineHeight: 1.7 }}>
-            {basliklar.aciklama}
-          </p>
+          <h1 style={{ fontSize: "clamp(24px, 4vw, 42px)", fontWeight: 900, color: "#fff", marginBottom: 12 }}>{basliklar.h1}</h1>
+          <p style={{ color: "#BFDBFE", fontSize: 16, maxWidth: 680, lineHeight: 1.7 }}>{basliklar.aciklama}</p>
           <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <span style={{ background: "rgba(255,255,255,0.15)", color: "#fff", borderRadius: 20, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>
-              📍 {il.ilceler.length} İlçe
-            </span>
-            <span style={{ background: "rgba(255,255,255,0.15)", color: "#fff", borderRadius: 20, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>
-              🔧 {kategoriler.length} Servis Kategorisi
-            </span>
+            <span style={{ background: "rgba(255,255,255,0.15)", color: "#fff", borderRadius: 20, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>📍 {il.ilceler.length} İlçe</span>
+            <span style={{ background: "rgba(255,255,255,0.15)", color: "#fff", borderRadius: 20, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>🔧 {kategoriler.length} Servis Kategorisi</span>
           </div>
         </div>
       </section>
 
       <AdSenseBanner tip="il_ilce" />
 
-      {/* H2: İlçeler */}
       <section style={{ padding: "48px 24px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#111827", marginBottom: 8 }}>
-            {basliklar.h2_ilceler}
-          </h2>
-          <p style={{ color: "#6B7280", fontSize: 15, marginBottom: 24 }}>
-            {il.ad} iline ait {il.ilceler.length} ilçede teknik servis arayabilirsiniz.
-          </p>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#111827", marginBottom: 8 }}>{basliklar.h2_ilceler}</h2>
+          <p style={{ color: "#6B7280", fontSize: 15, marginBottom: 24 }}>{il.ad} iline ait {il.ilceler.length} ilçede teknik servis arayabilirsiniz.</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
             {il.ilceler.map(ilce => (
               <Link key={ilce.slug} href={`/${params.il}/${ilce.slug}`}
                 title={`${ilce.ad} ${il.ad} Teknik Servis`}
-                style={{ background: "#fff", border: "1.5px solid #E5E7EB", borderRadius: 10, padding: "14px 16px", textDecoration: "none", display: "block", transition: "all 0.2s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#1A56DB"; (e.currentTarget as HTMLAnchorElement).style.background = "#EBF5FF"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "#E5E7EB"; (e.currentTarget as HTMLAnchorElement).style.background = "#fff"; }}>
+                style={{ background: "#fff", border: "1.5px solid #E5E7EB", borderRadius: 10, padding: "14px 16px", textDecoration: "none", display: "block" }}>
                 <div style={{ fontWeight: 700, color: "#111827", fontSize: 14 }}>{ilce.ad}</div>
                 <div style={{ fontSize: 11, color: "#6B7280", marginTop: 3 }}>{il.ad} teknik servis →</div>
               </Link>
@@ -108,10 +73,9 @@ export default function IlSayfasi({ params }: Props) {
         </div>
       </section>
 
-      {/* H2: Kategoriler */}
       <section style={{ padding: "0 24px 48px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#111827", marginBottom: 8 }}>{basliklar.h2_kategoriler}</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#111827", marginBottom: 16 }}>{basliklar.h2_kategoriler}</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 14 }}>
             {kategoriler.map(k => (
               <div key={k.slug} style={{ background: "#F8FAFF", borderRadius: 12, padding: "20px", border: "1px solid #EBF5FF" }}>
@@ -132,30 +96,15 @@ export default function IlSayfasi({ params }: Props) {
         </div>
       </section>
 
-      {/* SEO Metin — keyword yoğunluğu */}
       <section style={{ padding: "0 24px 48px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", background: "#F9FAFB", borderRadius: 14, padding: "36px" }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827", marginBottom: 20 }}>{il.ad} Teknik Servis Hakkında</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }}>
-            <p style={{ color: "#374151", lineHeight: 1.9, fontSize: 15 }}>
-              <strong>{il.ad} klima servisi</strong>, <strong>{il.ad} kombi servisi</strong>,{" "}
-              <strong>{il.ad} buzdolabı tamiri</strong>, <strong>{il.ad} çamaşır makinesi servisi</strong>{" "}
-              ve <strong>{il.ad} bulaşık makinesi servisi</strong> için Türkiye&apos;nin en kapsamlı rehberini sunuyoruz.{" "}
-              {il.ilceler.length} ilçesiyle geniş bir coğrafyayı kapsayan {il.ad}&apos;de Bosch, Arçelik,
-              Daikin, Vaillant gibi markaların hem yetkili hem özel servis noktalarını bulabilirsiniz.
-            </p>
-            <p style={{ color: "#374151", lineHeight: 1.9, fontSize: 15 }}>
-              {il.ad} iline bağlı{" "}
-              {il.ilceler.slice(0, 5).map(i => `${i.ad} teknik servis`).join(", ")}{" "}
-              ve daha fazlası için ilçe listesini kullanabilirsiniz.
-              Premium usta seçeneğiyle {il.ad}&apos;de doğrudan iletişime geçebileceğiniz
-              bireysel teknik servis uzmanlarına ulaşabilirsiniz.
-            </p>
-          </div>
+          <p style={{ color: "#374151", lineHeight: 1.9, fontSize: 15 }}>
+            <strong>{il.ad} klima servisi</strong>, <strong>{il.ad} kombi servisi</strong>, <strong>{il.ad} buzdolabı tamiri</strong>, <strong>{il.ad} çamaşır makinesi servisi</strong> ve <strong>{il.ad} bulaşık makinesi servisi</strong> için Türkiye&apos;nin en kapsamlı rehberini sunuyoruz. {il.ilceler.length} ilçesiyle geniş bir coğrafyayı kapsayan {il.ad}&apos;de Bosch, Arçelik, Daikin, Vaillant gibi markaların hem yetkili hem özel servis noktalarını bulabilirsiniz.
+          </p>
         </div>
       </section>
 
-      {/* FAQ */}
       <section style={{ padding: "0 24px 48px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827", marginBottom: 20 }}>{basliklar.h2_sss}</h2>

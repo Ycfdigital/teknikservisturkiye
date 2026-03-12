@@ -5,6 +5,8 @@ import { iller, kategoriler } from "@/data/turkiye";
 import { generateTitle, generateDescription, breadcrumbSchema, ilceSchema, faqSchema, kategoriSSS, sayfaBasliklari, SITE_URL } from "@/lib/seo";
 import { AdSenseBanner } from "@/components/ui/AdSense";
 
+export const dynamic = "force-dynamic";
+
 interface Props { params: { il: string; ilce: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -47,9 +49,7 @@ export default function IlceSayfasi({ params }: Props) {
 
       <section style={{ background: "linear-gradient(135deg, #1A56DB 0%, #1E40AF 100%)", padding: "48px 24px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <h1 style={{ fontSize: "clamp(22px, 4vw, 40px)", fontWeight: 900, color: "#fff", marginBottom: 12 }}>
-            {basliklar.h1}
-          </h1>
+          <h1 style={{ fontSize: "clamp(22px, 4vw, 40px)", fontWeight: 900, color: "#fff", marginBottom: 12 }}>{basliklar.h1}</h1>
           <p style={{ color: "#BFDBFE", fontSize: 16, lineHeight: 1.7 }}>{basliklar.aciklama}</p>
         </div>
       </section>

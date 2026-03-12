@@ -7,6 +7,10 @@ const nextConfig = {
       { protocol: "https", hostname: "**.googleapis.com" },
       { protocol: "https", hostname: "**.gstatic.com" },
     ]
-  }
+  },
+  async redirects() {
+    return [];
+  },
 };
+
 module.exports = nextConfig;
