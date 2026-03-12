@@ -1,7 +1,5 @@
 "use client";
 export const dynamic = "force-dynamic";
-export const dynamic = "force-dynamic";
-"use client";
 import { useState } from "react";
 import { kategoriler, iller, markalar } from "@/data/turkiye";
 
